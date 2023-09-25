@@ -42,3 +42,4 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
               /repos/Yuriy-Semen_ghub/test/commits/${{ github.ref }}/status
+
