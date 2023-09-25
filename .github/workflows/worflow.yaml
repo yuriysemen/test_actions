@@ -1,0 +1,44 @@
+name: Run end2end tests
+
+on:  
+  # We would never need to run this workflow manually, but enabling manual trigger in case we hit some roadblock.
+  workflow_dispatch:
+    inputs:
+      EXECUTION_ENVIRONMENT:
+        description: 'Select ENV'
+        type: choice
+        required: true
+        default: 'dev4 internal'
+        options:
+          - 'dev4 internal'
+
+jobs:
+  end2end-test:
+    name: Run end2end test
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛒  Checkout
+        uses: actions/checkout@v3.5.2
+        with:
+          fetch-depth: 0
+
+  release:
+    name: Release from pushed tag
+    runs-on: ubuntu-latest
+    steps:         
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="Release ${tag#v}" \
+              --generate-notes \
+              --draft
+              
+          gh api \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/Yuriy-Semen_ghub/test/commits/${{ github.ref }}/status
