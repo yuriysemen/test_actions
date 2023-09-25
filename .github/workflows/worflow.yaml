@@ -20,10 +20,10 @@ jobs:
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
         run: |
-          gh api \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              /repos/Yuriy-Semen_ghub/test/commits/${{ github.ref }}/status
+          curl --request GET \
+            --url "https://api.github.com/repos/yuriysemen/test_actions/commits/${{ github.ref }}/status" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            
 
